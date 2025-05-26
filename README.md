@@ -55,8 +55,7 @@ HTML5 + CSS3	Diseño responsivo
 
 📁 Estructura del Proyecto
 pgsql
-Copiar
-Editar
+
 Rsoftprogralineal/
 ├── app.py
 ├── requirements.txt
@@ -72,6 +71,8 @@ Rsoftprogralineal/
 │   ├── metodo_grafico.html
 │   ├── metodo_simplex.html
 │   └── metodo_simplex_tabla.html
+
+
 ✨ Características
 🖥️ Interfaz intuitiva y profesional
 
