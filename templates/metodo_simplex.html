@@ -1,0 +1,948 @@
+{% extends "layout.html" %}
+
+{% block title %}Método Simplex - Programación Lineal{% endblock %}
+
+{% block content %}
+<!-- Header Section -->
+<div class="method-header text-center mb-5">
+    <div class="method-icon-large mb-4">
+        <i class="fas fa-bolt"></i>
+    </div>
+    <h1 class="method-title">Método Simplex Directo</h1>
+    <p class="method-subtitle">
+        Resuelve problemas de programación lineal de forma rápida y automática
+    </p>
+</div>
+
+<!-- Main Form Container -->
+<div class="form-container">
+    <form method="post" id="simplex-form" class="simplex-form">
+        
+        <!-- Objective Function Section -->
+        <div class="form-section">
+            <div class="section-header">
+                <div class="section-icon">
+                    <i class="fas fa-bullseye"></i>
+                </div>
+                <h3 class="section-title">Función Objetivo</h3>
+            </div>
+            
+            <div class="input-group-custom">
+                <div class="input-wrapper">
+                    <label class="form-label">
+                        <i class="fas fa-function me-2"></i>
+                        Define tu función objetivo
+                    </label>
+                    <input type="text" 
+                           name="objetivo" 
+                           class="form-control-custom" 
+                           placeholder="Ejemplo: 6x1 + 12x2"
+                           required>
+                    <div class="input-help">
+                        <i class="fas fa-info-circle me-1"></i>
+                        Usa formato: ax1 + bx2 (donde a, b son coeficientes)
+                    </div>
+                </div>
+                
+                <div class="optimization-selector">
+                    <label class="form-label">
+                        <i class="fas fa-chart-line me-2"></i>
+                        Tipo de Optimización
+                    </label>
+                    <div class="radio-group">
+                        <label class="radio-option">
+                            <input type="radio" name="tipo" value="max" checked>
+                            <span class="radio-custom"></span>
+                            <span class="radio-label">
+                                <i class="fas fa-arrow-up me-1"></i>
+                                Maximizar
+                            </span>
+                        </label>
+                        <label class="radio-option">
+                            <input type="radio" name="tipo" value="min">
+                            <span class="radio-custom"></span>
+                            <span class="radio-label">
+                                <i class="fas fa-arrow-down me-1"></i>
+                                Minimizar
+                            </span>
+                        </label>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Constraints Section -->
+        <div class="form-section">
+            <div class="section-header">
+                <div class="section-icon constraints-icon">
+                    <i class="fas fa-list-ul"></i>
+                </div>
+                <h3 class="section-title">Restricciones</h3>
+                <button type="button" class="btn-add-constraint" onclick="agregarRestriccion()">
+                    <i class="fas fa-plus me-2"></i>
+                    Añadir Restricción
+                </button>
+            </div>
+            
+            <div id="restricciones" class="constraints-container">
+                <div class="constraint-item">
+                    <div class="constraint-header">
+                        <span class="constraint-number">1</span>
+                        <span class="constraint-label">Restricción</span>
+                    </div>
+                    <div class="constraint-inputs">
+                        <div class="coefficient-group">
+                            <input type="number" 
+                                   step="any" 
+                                   name="a[]" 
+                                   class="coef-input"
+                                   placeholder="0"
+                                   required>
+                            <span class="variable-label">x₁</span>
+                        </div>
+                        
+                        <span class="operator-plus">+</span>
+                        
+                        <div class="coefficient-group">
+                            <input type="number" 
+                                   step="any" 
+                                   name="b[]" 
+                                   class="coef-input"
+                                   placeholder="0"
+                                   required>
+                            <span class="variable-label">x₂</span>
+                        </div>
+                        
+                        <select name="signo[]" class="operator-select">
+                            <option value="<=">&le;</option>
+                            <option value=">=">&ge;</option>
+                            <option value="=">=</option>
+                        </select>
+                        
+                        <div class="rhs-group">
+                            <input type="number" 
+                                   step="any" 
+                                   name="rhs[]" 
+                                   class="rhs-input"
+                                   placeholder="Valor"
+                                   required>
+                        </div>
+                        
+                        <button type="button" class="btn-remove-constraint" onclick="eliminarRestriccion(this)" style="display: none;">
+                            <i class="fas fa-trash"></i>
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Action Buttons -->
+        <div class="form-actions">
+            <button type="submit" class="btn-solve">
+                <i class="fas fa-calculator me-2"></i>
+                <span>Resolver Problema</span>
+                <div class="btn-loading">
+                    <div class="spinner"></div>
+                </div>
+            </button>
+            
+            <button type="button" class="btn-clear" onclick="limpiarFormulario()">
+                <i class="fas fa-eraser me-2"></i>
+                Limpiar Todo
+            </button>
+        </div>
+    </form>
+</div>
+
+<!-- Alternative Method Link -->
+<div class="alternative-method">
+    <div class="alternative-card">
+        <div class="alternative-icon">
+            <i class="fas fa-table"></i>
+        </div>
+        <div class="alternative-content">
+            <h4>¿Prefieres ver el proceso paso a paso?</h4>
+            <p>Usa el método Simplex con tabla para seguir cada iteración del algoritmo</p>
+        </div>
+        <a href="/metodo_simplex_tabla" class="btn-alternative">
+            <span>Método con Tabla</span>
+            <i class="fas fa-arrow-right ms-2"></i>
+        </a>
+    </div>
+</div>
+
+<!-- Results Section -->
+{% if resultado %}
+<div class="results-section">
+    <div class="results-header">
+        <div class="results-icon">
+            <i class="fas fa-chart-pie"></i>
+        </div>
+        <h3 class="results-title">Resultado de la Optimización</h3>
+    </div>
+    <div class="results-content">
+        {{ resultado | safe }}
+    </div>
+    <div class="results-actions">
+        <button class="btn-export" onclick="exportarResultados()">
+            <i class="fas fa-download me-2"></i>
+            Exportar Resultados
+        </button>
+        <button class="btn-new-problem" onclick="nuevoProblema()">
+            <i class="fas fa-plus me-2"></i>
+            Nuevo Problema
+        </button>
+    </div>
+</div>
+{% endif %}
+
+<style>
+/* Method Header */
+.method-header {
+    padding: 2rem 0;
+    background: linear-gradient(135deg, rgba(240, 147, 251, 0.1) 0%, rgba(245, 87, 108, 0.1) 100%);
+    border-radius: 20px;
+    margin-bottom: 3rem;
+}
+
+.method-icon-large {
+    width: 100px;
+    height: 100px;
+    background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 3rem;
+    color: white;
+    margin: 0 auto;
+    animation: pulse 2s infinite;
+}
+
+@keyframes pulse {
+    0% { transform: scale(1); }
+    50% { transform: scale(1.05); }
+    100% { transform: scale(1); }
+}
+
+.method-title {
+    font-size: 2.5rem;
+    font-weight: 700;
+    background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    margin-bottom: 1rem;
+}
+
+.method-subtitle {
+    font-size: 1.1rem;
+    color: #4a5568;
+    max-width: 500px;
+    margin: 0 auto;
+}
+
+/* Form Container */
+.form-container {
+    background: white;
+    border-radius: 20px;
+    padding: 2.5rem;
+    box-shadow: 0 15px 35px rgba(0, 0, 0, 0.1);
+    border: 1px solid rgba(240, 147, 251, 0.2);
+}
+
+.simplex-form {
+    max-width: 100%;
+}
+
+/* Form Sections */
+.form-section {
+    margin-bottom: 3rem;
+    padding: 2rem;
+    background: #f8fafc;
+    border-radius: 15px;
+    border: 1px solid rgba(240, 147, 251, 0.1);
+}
+
+.section-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 2rem;
+    flex-wrap: wrap;
+    gap: 1rem;
+}
+
+.section-icon {
+    width: 50px;
+    height: 50px;
+    background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+    border-radius: 12px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: white;
+    font-size: 1.2rem;
+    margin-right: 1rem;
+}
+
+.section-icon.constraints-icon {
+    background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
+}
+
+.section-title {
+    font-size: 1.5rem;
+    font-weight: 600;
+    color: #2d3748;
+    margin: 0;
+    flex: 1;
+}
+
+/* Input Groups */
+.input-group-custom {
+    display: grid;
+    grid-template-columns: 2fr 1fr;
+    gap: 2rem;
+    align-items: start;
+}
+
+.input-wrapper {
+    position: relative;
+}
+
+.form-label {
+    display: block;
+    font-weight: 600;
+    color: #2d3748;
+    margin-bottom: 0.5rem;
+    font-size: 0.95rem;
+}
+
+.form-control-custom {
+    width: 100%;
+    padding: 1rem 1.5rem;
+    border: 2px solid #e2e8f0;
+    border-radius: 12px;
+    font-size: 1rem;
+    transition: all 0.3s ease;
+    background: white;
+}
+
+.form-control-custom:focus {
+    outline: none;
+    border-color: #f093fb;
+    box-shadow: 0 0 0 3px rgba(240, 147, 251, 0.1);
+}
+
+.input-help {
+    margin-top: 0.5rem;
+    font-size: 0.85rem;
+    color: #718096;
+}
+
+/* Radio Groups */
+.radio-group {
+    display: flex;
+    gap: 1.5rem;
+    flex-wrap: wrap;
+}
+
+.radio-option {
+    display: flex;
+    align-items: center;
+    cursor: pointer;
+    padding: 1rem;
+    background: white;
+    border: 2px solid #e2e8f0;
+    border-radius: 12px;
+    transition: all 0.3s ease;
+    flex: 1;
+    min-width: 150px;
+}
+
+.radio-option:hover {
+    border-color: #f093fb;
+    background: rgba(240, 147, 251, 0.05);
+}
+
+.radio-option input[type="radio"] {
+    display: none;
+}
+
+.radio-custom {
+    width: 20px;
+    height: 20px;
+    border: 2px solid #cbd5e0;
+    border-radius: 50%;
+    margin-right: 0.75rem;
+    position: relative;
+    transition: all 0.3s ease;
+}
+
+.radio-option input[type="radio"]:checked + .radio-custom {
+    border-color: #f093fb;
+    background: #f093fb;
+}
+
+.radio-option input[type="radio"]:checked + .radio-custom::after {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 8px;
+    height: 8px;
+    background: white;
+    border-radius: 50%;
+}
+
+.radio-label {
+    font-weight: 500;
+    color: #2d3748;
+}
+
+/* Constraints */
+.btn-add-constraint {
+    background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
+    color: white;
+    border: none;
+    padding: 0.75rem 1.5rem;
+    border-radius: 12px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    font-size: 0.9rem;
+}
+
+.btn-add-constraint:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 20px rgba(79, 172, 254, 0.3);
+}
+
+.constraints-container {
+    space-y: 1rem;
+}
+
+.constraint-item {
+    background: white;
+    border: 2px solid #e2e8f0;
+    border-radius: 15px;
+    padding: 1.5rem;
+    margin-bottom: 1rem;
+    transition: all 0.3s ease;
+}
+
+.constraint-item:hover {
+    border-color: #4facfe;
+    box-shadow: 0 5px 15px rgba(79, 172, 254, 0.1);
+}
+
+.constraint-header {
+    display: flex;
+    align-items: center;
+    margin-bottom: 1rem;
+}
+
+.constraint-number {
+    background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
+    color: white;
+    width: 30px;
+    height: 30px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 600;
+    font-size: 0.9rem;
+    margin-right: 0.75rem;
+}
+
+.constraint-label {
+    font-weight: 600;
+    color: #2d3748;
+}
+
+.constraint-inputs {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    flex-wrap: wrap;
+}
+
+.coefficient-group {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.coef-input, .rhs-input {
+    width: 80px;
+    padding: 0.75rem;
+    border: 2px solid #e2e8f0;
+    border-radius: 8px;
+    text-align: center;
+    font-weight: 600;
+    transition: all 0.3s ease;
+}
+
+.coef-input:focus, .rhs-input:focus {
+    outline: none;
+    border-color: #4facfe;
+    box-shadow: 0 0 0 3px rgba(79, 172, 254, 0.1);
+}
+
+.variable-label {
+    font-weight: 600;
+    color: #4facfe;
+    font-size: 1.1rem;
+}
+
+.operator-plus {
+    font-weight: 600;
+    color: #718096;
+    font-size: 1.2rem;
+}
+
+.operator-select {
+    padding: 0.75rem;
+    border: 2px solid #e2e8f0;
+    border-radius: 8px;
+    background: white;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.operator-select:focus {
+    outline: none;
+    border-color: #4facfe;
+}
+
+.btn-remove-constraint {
+    background: #f56565;
+    color: white;
+    border: none;
+    padding: 0.5rem;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    width: 40px;
+    height: 40px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.btn-remove-constraint:hover {
+    background: #e53e3e;
+    transform: scale(1.05);
+}
+
+/* Form Actions */
+.form-actions {
+    display: flex;
+    gap: 1rem;
+    justify-content: center;
+    margin-top: 3rem;
+    flex-wrap: wrap;
+}
+
+.btn-solve {
+    background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+    color: white;
+    border: none;
+    padding: 1rem 3rem;
+    border-radius: 50px;
+    font-weight: 600;
+    font-size: 1.1rem;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    position: relative;
+    overflow: hidden;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 200px;
+}
+
+.btn-solve:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 15px 30px rgba(240, 147, 251, 0.4);
+}
+
+.btn-solve:active {
+    transform: translateY(-1px);
+}
+
+.btn-loading {
+    display: none;
+    position: absolute;
+    left: 1rem;
+}
+
+.spinner {
+    width: 20px;
+    height: 20px;
+    border: 2px solid rgba(255, 255, 255, 0.3);
+    border-radius: 50%;
+    border-top-color: white;
+    animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+    to { transform: rotate(360deg); }
+}
+
+.btn-clear {
+    background: transparent;
+    color: #718096;
+    border: 2px solid #e2e8f0;
+    padding: 1rem 2rem;
+    border-radius: 50px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.btn-clear:hover {
+    border-color: #cbd5e0;
+    color: #4a5568;
+    background: #f7fafc;
+}
+
+/* Alternative Method */
+.alternative-method {
+    margin: 3rem 0;
+}
+
+.alternative-card {
+    background: linear-gradient(135deg, rgba(79, 172, 254, 0.1) 0%, rgba(0, 242, 254, 0.1) 100%);
+    border: 2px solid rgba(79, 172, 254, 0.2);
+    border-radius: 20px;
+    padding: 2rem;
+    display: flex;
+    align-items: center;
+    gap: 2rem;
+    transition: all 0.3s ease;
+}
+
+.alternative-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 15px 30px rgba(79, 172, 254, 0.15);
+}
+
+.alternative-icon {
+    width: 80px;
+    height: 80px;
+    background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 2rem;
+    color: white;
+    flex-shrink: 0;
+}
+
+.alternative-content {
+    flex: 1;
+}
+
+.alternative-content h4 {
+    color: #2d3748;
+    font-weight: 600;
+    margin-bottom: 0.5rem;
+}
+
+.alternative-content p {
+    color: #4a5568;
+    margin: 0;
+}
+
+.btn-alternative {
+    background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
+    color: white;
+    text-decoration: none;
+    padding: 1rem 2rem;
+    border-radius: 50px;
+    font-weight: 600;
+    transition: all 0.3s ease;
+    display: flex;
+    align-items: center;
+    white-space: nowrap;
+}
+
+.btn-alternative:hover {
+    color: white;
+    text-decoration: none;
+    transform: translateY(-2px);
+    box-shadow: 0 10px 25px rgba(79, 172, 254, 0.3);
+}
+
+/* Results Section */
+.results-section {
+    background: white;
+    border-radius: 20px;
+    padding: 2.5rem;
+    box-shadow: 0 15px 35px rgba(0, 0, 0, 0.1);
+    border: 1px solid rgba(72, 187, 120, 0.2);
+    margin-top: 3rem;
+}
+
+.results-header {
+    display: flex;
+    align-items: center;
+    margin-bottom: 2rem;
+}
+
+.results-icon {
+    width: 60px;
+    height: 60px;
+    background: linear-gradient(135deg, #48bb78 0%, #38a169 100%);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.5rem;
+    color: white;
+    margin-right: 1rem;
+}
+
+.results-title {
+    font-size: 1.5rem;
+    font-weight: 600;
+    color: #2d3748;
+    margin: 0;
+}
+
+.results-content {
+    background: #f0fff4;
+    border: 1px solid #9ae6b4;
+    border-radius: 15px;
+    padding: 2rem;
+    margin-bottom: 2rem;
+    font-family: 'Courier New', monospace;
+    color: #2d3748;
+    line-height: 1.6;
+}
+
+.results-actions {
+    display: flex;
+    gap: 1rem;
+    justify-content: center;
+    flex-wrap: wrap;
+}
+
+.btn-export, .btn-new-problem {
+    padding: 0.75rem 1.5rem;
+    border-radius: 12px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    border: none;
+    display: flex;
+    align-items: center;
+}
+
+.btn-export {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    color: white;
+}
+
+.btn-new-problem {
+    background: transparent;
+    color: #4a5568;
+    border: 2px solid #e2e8f0;
+}
+
+.btn-export:hover, .btn-new-problem:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+    .method-title {
+        font-size: 2rem;
+    }
+    
+    .form-container {
+        padding: 1.5rem;
+    }
+    
+    .input-group-custom {
+        grid-template-columns: 1fr;
+        gap: 1rem;
+    }
+    
+    .constraint-inputs {
+        flex-direction: column;
+        align-items: stretch;
+        gap: 1rem;
+    }
+    
+    .coefficient-group {
+        justify-content: center;
+    }
+    
+    .coef-input, .rhs-input {
+        width: 100px;
+    }
+    
+    .alternative-card {
+        flex-direction: column;
+        text-align: center;
+    }
+    
+    .form-actions {
+        flex-direction: column;
+        align-items: center;
+    }
+    
+    .btn-solve {
+        width: 100%;
+        max-width: 300px;
+    }
+}
+
+@media (max-width: 576px) {
+    .method-header {
+        padding: 1.5rem;
+    }
+    
+    .method-icon-large {
+        width: 80px;
+        height: 80px;
+        font-size: 2rem;
+    }
+    
+    .form-section {
+        padding: 1.5rem;
+    }
+    
+    .section-header {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+    
+    .constraint-inputs {
+        gap: 0.5rem;
+    }
+    
+    .coef-input, .rhs-input {
+        width: 80px;
+    }
+}
+</style>
+
+<script>
+let constraintCount = 1;
+
+function agregarRestriccion() {
+    constraintCount++;
+    const contenedor = document.getElementById('restricciones');
+    const div = document.createElement('div');
+    div.classList.add('constraint-item');
+    div.innerHTML = `
+        <div class="constraint-header">
+            <span class="constraint-number">${constraintCount}</span>
+            <span class="constraint-label">Restricción</span>
+        </div>
+        <div class="constraint-inputs">
+            <div class="coefficient-group">
+                <input type="number" step="any" name="a[]" class="coef-input" placeholder="0" required>
+                <span class="variable-label">x₁</span>
+            </div>
+            
+            <span class="operator-plus">+</span>
+            
+            <div class="coefficient-group">
+                <input type="number" step="any" name="b[]" class="coef-input" placeholder="0" required>
+                <span class="variable-label">x₂</span>
+            </div>
+            
+            <select name="signo[]" class="operator-select">
+                <option value="<=">&le;</option>
+                <option value=">=">&ge;</option>
+                <option value="=">=</option>
+            </select>
+            
+            <div class="rhs-group">
+                <input type="number" step="any" name="rhs[]" class="rhs-input" placeholder="Valor" required>
+            </div>
+            
+            <button type="button" class="btn-remove-constraint" onclick="eliminarRestriccion(this)">
+                <i class="fas fa-trash"></i>
+            </button>
+        </div>
+    `;
+    contenedor.appendChild(div);
+    
+    // Actualizar visibilidad de botones de eliminar
+    actualizarBotonesEliminar();
+}
+
+function eliminarRestriccion(boton) {
+    const restriccion = boton.closest('.constraint-item');
+    restriccion.remove();
+    
+    // Renumerar restricciones
+    const restricciones = document.querySelectorAll('.constraint-item');
+    restricciones.forEach((item, index) => {
+        const numero = item.querySelector('.constraint-number');
+        numero.textContent = index + 1;
+    });
+    
+    constraintCount = restricciones.length;
+    actualizarBotonesEliminar();
+}
+
+function actualizarBotonesEliminar() {
+    const restricciones = document.querySelectorAll('.constraint-item');
+    const botones = document.querySelectorAll('.btn-remove-constraint');
+    
+    botones.forEach((boton, index) => {
+        boton.style.display = restricciones.length > 1 ? 'flex' : 'none';
+    });
+}
+
+function limpiarFormulario() {
+    document.getElementById('simplex-form').reset();
+    
+    // Limpiar restricciones adicionales
+    const restricciones = document.querySelectorAll('.constraint-item');
+    for (let i = restricciones.length - 1; i > 0; i--) {
+        restricciones[i].remove();
+    }
+    
+    constraintCount = 1;
+    actualizarBotonesEliminar();
+}
+
+function exportarResultados() {
+    // Implementar exportación de resultados
+    alert('Función de exportación en desarrollo');
+}
+
+function nuevoProblema() {
+    limpiarFormulario();
+    document.querySelector('.results-section')?.remove();
+}
+
+// Animación del botón de envío
+document.getElementById('simplex-form').addEventListener('submit', function(e) {
+    const boton = document.querySelector('.btn-solve');
+    const loading = boton.querySelector('.btn-loading');
+    const texto = boton.querySelector('span');
+    
+    loading.style.display = 'block';
+    texto.style.opacity = '0.7';
+    boton.style.pointerEvents = 'none';
+});
+
+// Inicializar
+document.addEventListener('DOMContentLoaded', function() {
+    actualizarBotonesEliminar();
+});
+</script>
+{% endblock %}

@@ -1,0 +1,705 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Calculadora del Método Simplex</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 20px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.2);
+            backdrop-filter: blur(10px);
+            overflow: hidden;
+        }
+
+        .header {
+            background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
+            color: white;
+            padding: 30px;
+            text-align: center;
+        }
+
+        .header h1 {
+            font-size: 2.5em;
+            margin-bottom: 10px;
+            font-weight: 300;
+        }
+
+        .header p {
+            opacity: 0.9;
+            font-size: 1.1em;
+        }
+
+        .content {
+            padding: 40px;
+        }
+
+        .form-section {
+            background: white;
+            border-radius: 15px;
+            padding: 30px;
+            margin-bottom: 30px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+            border: 1px solid rgba(0, 0, 0, 0.05);
+        }
+
+        .form-group {
+            margin-bottom: 25px;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 600;
+            color: #333;
+            font-size: 1.1em;
+        }
+
+        .form-group input, .form-group select {
+            width: 100%;
+            padding: 12px 16px;
+            border: 2px solid #e1e8ed;
+            border-radius: 10px;
+            font-size: 16px;
+            transition: all 0.3s ease;
+            background: #f8f9fa;
+        }
+
+        .form-group input:focus, .form-group select:focus {
+            outline: none;
+            border-color: #4facfe;
+            background: white;
+            box-shadow: 0 0 0 3px rgba(79, 172, 254, 0.1);
+        }
+
+        .restriction {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 15px;
+            padding: 15px;
+            background: #f8f9fa;
+            border-radius: 10px;
+            flex-wrap: wrap;
+        }
+
+        .restriction input {
+            width: 80px;
+            margin: 0;
+        }
+
+        .restriction select {
+            width: 80px;
+            margin: 0;
+        }
+
+        .btn {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            padding: 15px 30px;
+            border-radius: 25px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
+        }
+
+        .btn-secondary {
+            background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
+            padding: 10px 20px;
+            font-size: 14px;
+        }
+
+        .results {
+            background: white;
+            border-radius: 15px;
+            padding: 30px;
+            margin-top: 30px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+        }
+
+        .iteration {
+            margin-bottom: 40px;
+            border-bottom: 2px solid #f0f0f0;
+            padding-bottom: 30px;
+        }
+
+        .iteration:last-child {
+            border-bottom: none;
+        }
+
+        .iteration-header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 15px 25px;
+            border-radius: 10px;
+            margin-bottom: 20px;
+        }
+
+        .explanation {
+            background: #f8f9fa;
+            padding: 20px;
+            border-radius: 10px;
+            margin: 15px 0;
+            font-family: 'Courier New', monospace;
+            white-space: pre-line;
+            border-left: 4px solid #4facfe;
+        }
+
+        .simplex-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 20px 0;
+            background: white;
+            border-radius: 10px;
+            overflow: hidden;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+        }
+
+        .simplex-table th {
+            background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
+            color: white;
+            padding: 12px;
+            text-align: center;
+            font-weight: 600;
+        }
+
+        .simplex-table td {
+            padding: 10px;
+            text-align: center;
+            border-bottom: 1px solid #e1e8ed;
+        }
+
+        .simplex-table tr:hover {
+            background: #f8f9fa;
+        }
+
+        .pivot-cell {
+            background: #ffe6e6 !important;
+            font-weight: bold;
+            color: #d63384;
+        }
+
+        .optimal-value {
+            background: linear-gradient(135deg, #28a745 0%, #20c997 100%);
+            color: white;
+            padding: 20px;
+            border-radius: 15px;
+            text-align: center;
+            font-size: 1.5em;
+            font-weight: 600;
+            margin-bottom: 30px;
+        }
+
+        .error {
+            background: #f8d7da;
+            color: #721c24;
+            padding: 15px;
+            border-radius: 10px;
+            margin: 15px 0;
+            border: 1px solid #f5c6cb;
+        }
+
+        @media (max-width: 768px) {
+            .content {
+                padding: 20px;
+            }
+            
+            .restriction {
+                flex-direction: column;
+                gap: 10px;
+            }
+            
+            .restriction input, .restriction select {
+                width: 100%;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>Calculadora del Método Simplex</h1>
+            <p>Resuelve problemas de programación lineal paso a paso</p>
+        </div>
+
+        <div class="content">
+            <div class="form-section">
+                <form id="simplex-form">
+                    <div class="form-group">
+                        <label for="objetivo">Función Objetivo:</label>
+                        <input type="text" id="objetivo" placeholder="Ej: 3x1+2x2" required>
+                        <small style="color: #666; margin-top: 5px; display: block;">
+                            Formato: coeficiente seguido de variable (ej: 3x1+2x2-x3)
+                        </small>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="tipo">Tipo de Optimización:</label>
+                        <select id="tipo" required>
+                            <option value="max">Maximizar</option>
+                            <option value="min">Minimizar</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label>Restricciones:</label>
+                        <div id="restricciones">
+                            <div class="restriction">
+                                <input type="number" step="any" class="coef-x1" placeholder="Coef. x1" required>
+                                <span>x1 +</span>
+                                <input type="number" step="any" class="coef-x2" placeholder="Coef. x2" required>
+                                <span>x2</span>
+                                <select class="signo">
+                                    <option value="<=">&le;</option>
+                                    <option value=">=">&ge;</option>
+                                    <option value="=">=</option>
+                                </select>
+                                <input type="number" step="any" class="rhs" placeholder="Valor" required>
+                                <button type="button" class="btn btn-secondary" onclick="eliminarRestriccion(this)">Eliminar</button>
+                            </div>
+                        </div>
+                        <button type="button" class="btn btn-secondary" onclick="agregarRestriccion()">+ Añadir Restricción</button>
+                    </div>
+
+                    <button type="submit" class="btn">Resolver Simplex</button>
+                </form>
+            </div>
+
+            <div id="resultados" style="display: none;"></div>
+        </div>
+    </div>
+
+    <script>
+        // Datos globales para el cálculo
+        let calculoActual = null;
+
+        function agregarRestriccion() {
+            const contenedor = document.getElementById('restricciones');
+            const div = document.createElement('div');
+            div.className = 'restriction';
+            div.innerHTML = `
+                <input type="number" step="any" class="coef-x1" placeholder="Coef. x1" required>
+                <span>x1 +</span>
+                <input type="number" step="any" class="coef-x2" placeholder="Coef. x2" required>
+                <span>x2</span>
+                <select class="signo">
+                    <option value="<=">&le;</option>
+                    <option value=">=">&ge;</option>
+                    <option value="=">=</option>
+                </select>
+                <input type="number" step="any" class="rhs" placeholder="Valor" required>
+                <button type="button" class="btn btn-secondary" onclick="eliminarRestriccion(this)">Eliminar</button>
+            `;
+            contenedor.appendChild(div);
+        }
+
+        function eliminarRestriccion(btn) {
+            const restricciones = document.querySelectorAll('.restriction');
+            if (restricciones.length > 1) {
+                btn.parentElement.remove();
+            }
+        }
+
+        // Clase para el método Simplex
+        class SimplexSolver {
+            constructor() {
+                this.tabla = null;
+                this.base = [];
+                this.baseIdx = [];
+                this.cj = [];
+                this.pasos = [];
+            }
+
+            parseObjetivo(objetivo) {
+                const c = [];
+                objetivo = objetivo.replace(/\s/g, '').replace(/-/g, '+-');
+                const terms = objetivo.split('+').filter(t => t !== '');
+                
+                for (let term of terms) {
+                    if (term.includes('x')) {
+                        const match = term.match(/^([+-]?\d*(?:\.\d+)?)x(\d+)$/);
+                        if (match) {
+                            let coef = match[1];
+                            if (coef === '' || coef === '+') coef = '1';
+                            if (coef === '-') coef = '-1';
+                            c.push(parseFloat(coef));
+                        }
+                    }
+                }
+                return c;
+            }
+
+            parseRestricciones(restricciones) {
+                const A = [];
+                const b = [];
+                const signos = [];
+
+                for (let restr of restricciones) {
+                    let signo, lhs, rhs;
+                    
+                    if (restr.includes('<=')) {
+                        [lhs, rhs] = restr.split('<=');
+                        signo = '<=';
+                    } else if (restr.includes('>=')) {
+                        [lhs, rhs] = restr.split('>=');
+                        signo = '>=';
+                    } else if (restr.includes('=')) {
+                        [lhs, rhs] = restr.split('=');
+                        signo = '=';
+                    }
+
+                    const coefs = this.parseObjetivo(lhs + '+0x1'); // Truco para usar el mismo parser
+                    A.push(coefs.slice(0, -1)); // Remover el +0x1
+                    b.push(parseFloat(rhs.trim()));
+                    signos.push(signo);
+                }
+
+
+
+                return { A, b };
+            }
+
+            construirTabla(A, b, c) {
+                const m = A.length;
+                const n = c.length;
+                
+                // Crear tabla inicial con variables de holgura
+                this.tabla = [];
+                for (let i = 0; i < m; i++) {
+                    const fila = [...A[i]];
+                    // Agregar variables de holgura
+                    for (let j = 0; j < m; j++) {
+                        fila.push(i === j ? 1 : 0);
+                    }
+                    fila.push(b[i]); // RHS
+                    this.tabla.push(fila);
+                }
+
+                // Configurar cj
+                this.cj = [...c, ...Array(m).fill(0), 0]; // c + slack + RHS
+                
+                // Base inicial (variables de holgura)
+                this.base = Array.from({length: m}, (_, i) => `S${i + 1}`);
+                this.baseIdx = Array.from({length: m}, (_, i) => n + i);
+            }
+
+            calcularZcj() {
+                const zcj = [];
+                const m = this.tabla.length;
+                const n = this.tabla[0].length - 1; // Sin contar RHS
+
+                for (let j = 0; j < n; j++) {
+                    let zj = 0;
+                    for (let i = 0; i < m; i++) {
+                        const baseVar = this.baseIdx[i];
+                        zj += this.cj[baseVar] * this.tabla[i][j];
+                    }
+                    zcj.push(this.cj[j] - zj);
+                }
+                zcj.push(0); // Para RHS
+                return zcj;
+            }
+
+            esOptima(zcj) {
+                return zcj.slice(0, -1).every(val => val <= 1e-8);
+            }
+
+            encontrarColumnaPivote(zcj) {
+                let maxVal = -Infinity;
+                let colPiv = -1;
+                
+                for (let j = 0; j < zcj.length - 1; j++) {
+                    if (zcj[j] > maxVal) {
+                        maxVal = zcj[j];
+                        colPiv = j;
+                    }
+                }
+                return colPiv;
+            }
+
+            encontrarFilaPivote(colPiv) {
+                const ratios = [];
+                let minRatio = Infinity;
+                let filaPiv = -1;
+
+                for (let i = 0; i < this.tabla.length; i++) {
+                    if (this.tabla[i][colPiv] > 1e-8) {
+                        const ratio = this.tabla[i][this.tabla[i].length - 1] / this.tabla[i][colPiv];
+                        ratios.push(ratio);
+                        if (ratio < minRatio) {
+                            minRatio = ratio;
+                            filaPiv = i;
+                        }
+                    } else {
+                        ratios.push(Infinity);
+                    }
+                }
+
+                return { filaPiv, ratios };
+            }
+
+            pivotear(filaPiv, colPiv) {
+                const pivote = this.tabla[filaPiv][colPiv];
+                
+                // Normalizar fila pivote
+                for (let j = 0; j < this.tabla[filaPiv].length; j++) {
+                    this.tabla[filaPiv][j] /= pivote;
+                }
+
+                // Hacer ceros en la columna pivote
+                for (let i = 0; i < this.tabla.length; i++) {
+                    if (i !== filaPiv) {
+                        const factor = this.tabla[i][colPiv];
+                        for (let j = 0; j < this.tabla[i].length; j++) {
+                            this.tabla[i][j] -= factor * this.tabla[filaPiv][j];
+                        }
+                    }
+                }
+
+                // Actualizar base
+                this.baseIdx[filaPiv] = colPiv;
+                this.base[filaPiv] = colPiv < (this.cj.length - this.tabla.length - 1) ? 
+                    `x${colPiv + 1}` : `S${colPiv - (this.cj.length - this.tabla.length - 1) + 1}`;
+            }
+
+            resolver(objetivo, restricciones, tipo = 'max') {
+                try {
+                    let c = this.parseObjetivo(objetivo);
+                    const { A, b } = this.parseRestricciones(restricciones);
+
+                    if (tipo === 'min') {
+                        c = c.map(val => -val);
+                    }
+
+                    this.construirTabla(A, b, c);
+                    this.pasos = [];
+
+                    let iteracion = 0;
+                    let optima = false;
+
+                    while (!optima && iteracion < 20) { // Límite de seguridad
+                        iteracion++;
+                        const zcj = this.calcularZcj();
+                        
+                        if (this.esOptima(zcj)) {
+                            optima = true;
+                            this.pasos.push({
+                                iteracion,
+                                tabla: this.tabla.map(row => [...row]),
+                                base: [...this.base],
+                                zcj: [...zcj],
+                                explicacion: 'Todos los valores de Cj - Zj son ≤ 0. Se alcanzó la solución óptima.',
+                                optima: true
+                            });
+                        } else {
+                            const colPiv = this.encontrarColumnaPivote(zcj);
+                            const { filaPiv, ratios } = this.encontrarFilaPivote(colPiv);
+                            
+                            if (filaPiv === -1) {
+                                throw new Error('El problema no tiene solución acotada (unbounded)');
+                            }
+
+                            let explicacion = `Columna pivote: x${colPiv + 1} (mayor Cj - Zj: ${zcj[colPiv].toFixed(2)})\n`;
+                            explicacion += `Ratios calculados:\n`;
+                            for (let i = 0; i < ratios.length; i++) {
+                                if (ratios[i] !== Infinity) {
+                                    explicacion += `  Fila ${i + 1}: ${this.tabla[i][this.tabla[i].length - 1].toFixed(2)} / ${this.tabla[i][colPiv].toFixed(2)} = ${ratios[i].toFixed(2)}\n`;
+                                }
+                            }
+                            explicacion += `Fila pivote: ${filaPiv + 1}`;
+
+                            this.pasos.push({
+                                iteracion,
+                                tabla: this.tabla.map(row => [...row]),
+                                base: [...this.base],
+                                zcj: [...zcj],
+                                explicacion,
+                                colPiv,
+                                filaPiv,
+                                optima: false
+                            });
+
+                            this.pivotear(filaPiv, colPiv);
+                        }
+                    }
+
+                    // Calcular valor óptimo
+                    let valorOptimo = 0;
+                    for (let i = 0; i < this.tabla.length; i++) {
+                        const baseVar = this.baseIdx[i];
+                        valorOptimo += this.cj[baseVar] * this.tabla[i][this.tabla[i].length - 1];
+                    }
+
+                    if (tipo === 'min') {
+                        valorOptimo = -valorOptimo;
+                    }
+
+                    return {
+                        pasos: this.pasos,
+                        valorOptimo,
+                        exito: true
+                    };
+
+                } catch (error) {
+                    return {
+                        pasos: [],
+                        valorOptimo: null,
+                        exito: false,
+                        error: error.message
+                    };
+                }
+            }
+        }
+
+        // Función principal para resolver
+        function resolverSimplex() {
+            const objetivo = document.getElementById('objetivo').value;
+            const tipo = document.getElementById('tipo').value;
+            
+            // Recopilar restricciones
+            const restricciones = [];
+            document.querySelectorAll('.restriction').forEach(restr => {
+                const coefX1 = restr.querySelector('.coef-x1').value;
+                const coefX2 = restr.querySelector('.coef-x2').value;
+                const signo = restr.querySelector('.signo').value;
+                const rhs = restr.querySelector('.rhs').value;
+                
+                restricciones.push(`${coefX1}x1+${coefX2}x2${signo}${rhs}`);
+            });
+
+            const solver = new SimplexSolver();
+            const resultado = solver.resolver(objetivo, restricciones, tipo);
+            
+            mostrarResultados(resultado);
+        }
+
+        function mostrarResultados(resultado) {
+            const container = document.getElementById('resultados');
+            container.style.display = 'block';
+            
+            if (!resultado.exito) {
+                container.innerHTML = `
+                    <div class="results">
+                        <div class="error">
+                            <strong>Error:</strong> ${resultado.error}
+                        </div>
+                    </div>
+                `;
+                return;
+            }
+
+            let html = '<div class="results">';
+            
+            if (resultado.valorOptimo !== null) {
+                html += `
+                    <div class="optimal-value">
+                        Valor Óptimo: ${resultado.valorOptimo.toFixed(4)}
+                    </div>
+                `;
+            }
+
+            resultado.pasos.forEach(paso => {
+                html += `
+                    <div class="iteration">
+                        <div class="iteration-header">
+                            <h3>Iteración ${paso.iteracion}</h3>
+                        </div>
+                        
+                        <div class="explanation">${paso.explicacion}</div>
+                        
+                        ${generarTablaHTML(paso.tabla, paso.base, paso.zcj, paso.colPiv, paso.filaPiv)}
+                    </div>
+                `;
+            });
+
+            html += '</div>';
+            container.innerHTML = html;
+            container.scrollIntoView({ behavior: 'smooth' });
+        }
+
+        function generarTablaHTML(tabla, base, zcj, colPiv, filaPiv) {
+            const numVars = tabla[0].length - base.length - 1; // Variables originales
+            
+            let html = '<table class="simplex-table">';
+            
+            // Header
+            html += '<thead><tr><th>Base</th>';
+            for (let j = 0; j < numVars; j++) {
+                html += `<th>x${j + 1}</th>`;
+            }
+            for (let j = 0; j < base.length; j++) {
+                html += `<th>S${j + 1}</th>`;
+            }
+            html += '<th>RHS</th></tr></thead>';
+
+            // Filas de la tabla
+            html += '<tbody>';
+            for (let i = 0; i < tabla.length; i++) {
+                html += `<tr><td><strong>${base[i]}</strong></td>`;
+                for (let j = 0; j < tabla[i].length; j++) {
+                    const esPivote = (colPiv !== undefined && filaPiv !== undefined && 
+                                    i === filaPiv && j === colPiv);
+                    const clase = esPivote ? 'pivot-cell' : '';
+                    html += `<td class="${clase}">${tabla[i][j].toFixed(4)}</td>`;
+                }
+                html += '</tr>';
+            }
+
+            // Fila Cj - Zj
+            html += '<tr style="background: #f8f9fa; font-weight: bold;"><td>Cj - Zj</td>';
+            for (let j = 0; j < zcj.length; j++) {
+                html += `<td>${zcj[j].toFixed(4)}</td>`;
+            }
+            html += '</tr>';
+
+            html += '</tbody></table>';
+            return html;
+        }
+
+        // Event listener para el formulario
+        document.getElementById('simplex-form').addEventListener('submit', function(e) {
+            e.preventDefault();
+            resolverSimplex();
+        });
+
+        // Agregar animaciones suaves al cargar
+        document.addEventListener('DOMContentLoaded', function() {
+            const elements = document.querySelectorAll('.form-section, .header');
+            elements.forEach((el, index) => {
+                el.style.opacity = '0';
+                el.style.transform = 'translateY(20px)';
+                setTimeout(() => {
+                    el.style.transition = 'all 0.6s ease';
+                    el.style.opacity = '1';
+                    el.style.transform = 'translateY(0)';
+                }, index * 200);
+            });
+        });
+    </script>
+</body>
+</html>

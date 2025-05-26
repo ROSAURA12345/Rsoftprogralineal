@@ -1,101 +1,99 @@
-# 🧮 RSoftPrograLineal
+✅ Entregable para tu tarea:
+📁 1. Archivo de despliegue con su respectivo manual
+✅ Carpeta comprimida (.zip) con toda la estructura del proyecto
 
-**Sistema Web Interactivo para resolver problemas de Programación Lineal**  
-🌐 Desarrollado por: **Rosaura Yana Pari**  
-📘 Proyecto académico | **Docente:** Milton Edward Humpiri Flores
+✅ Archivo README.md que actúa como manual de uso (lo genero abajo)
 
----
+✅ Código fuente completo
 
-## 📌 Descripción
+✅ Listo para ejecutar localmente
 
-**RSoftPrograLineal** es una aplicación web educativa que permite resolver problemas de optimización mediante programación lineal utilizando tres enfoques:
-
-- 📊 **Método Gráfico** (2 variables, solución visual)
-- ⚙️ **Simplex Directo** (cálculo instantáneo con `scipy.optimize`)
-- 📋 **Simplex con Tabla** (paso a paso educativo como en clases)
-
-Diseñado para estudiantes y docentes de matemáticas, ingeniería, economía y afines.
-
----
-
-## 🚀 Demo Local
-
-### 1. Clona el repositorio
-
-
-git clone https://github.com/ROSAURA12345/Rsoftprogralineal.git
-cd Rsoftprogralineal
-2. Crea entorno virtual (opcional)
-bash
+📝 README.md (Manual + Descripción del proyecto)
+markdown
 Copiar
 Editar
+# 🧮 Programación Lineal - Método Gráfico y Simplex
+
+Este proyecto web permite resolver problemas de programación lineal utilizando tres enfoques:
+- ✅ Método Gráfico (visual e interactivo)
+- ✅ Método Simplex Directo (rápido y automático)
+- ✅ Método Simplex con Tabla (educativo y paso a paso)
+
+---
+
+## 📌 Desarrollado por:
+**Rosaura Yana Pari**
+
+## 📅 Actividad:
+**Programación Lineal – Método Gráfico**  
+**Profesor:** Milton Edward Humpiri Flores  
+**Fecha de entrega:** Domingo 25 de mayo – 11:59 PM
+
+---
+
+## 🚀 Cómo ejecutar la aplicación
+
+### 1. Clona o descomprime el proyecto
+Asegúrate de tener Python instalado.
+
+### 2. Crea un entorno virtual (opcional pero recomendado)
+```bash
 python -m venv venv
-source venv/bin/activate  # En Windows: venv\Scripts\activate
+source venv/bin/activate  # En Windows usa: venv\Scripts\activate
 3. Instala las dependencias
 bash
 Copiar
 Editar
 pip install -r requirements.txt
-4. Ejecuta el servidor Flask
+4. Ejecuta la aplicación
 bash
 Copiar
 Editar
 python app.py
-Abre tu navegador en: http://localhost:5000
-
-🛠 Tecnologías Usadas
-Herramienta	Uso
-Python 3	Lógica de backend
-Flask	Framework web ligero
-NumPy / SciPy	Cálculo y optimización
-Plotly / Matplotlib	Gráficos interactivos
-Pandas	Tablas simplex
-Bootstrap 5	Interfaz adaptable
-HTML5 + CSS3	Diseño responsivo
-
+5. Abre en el navegador:
+arduino
+Copiar
+Editar
+http://localhost:5000
 📁 Estructura del Proyecto
 pgsql
-
-Rsoftprogralineal/
+Copiar
+Editar
+RSOFTPROGRALINEAL/
 ├── app.py
 ├── requirements.txt
 ├── modules/
 │   ├── grafico.py
 │   ├── simplex.py
-│   └── simplex_tabla.py
+│   ├── simplex_tabla.py
 ├── utils/
 │   └── parser.py
 ├── templates/
-│   ├── index.html
 │   ├── layout.html
+│   ├── index.html
 │   ├── metodo_grafico.html
 │   ├── metodo_simplex.html
 │   └── metodo_simplex_tabla.html
+└── static/
+    └── style.css (incrustado)
+💡 Funcionalidades
+🔷 Método gráfico con graficación interactiva usando Plotly.
 
+🔶 Simplex directo con Scipy.
 
-✨ Características
-🖥️ Interfaz intuitiva y profesional
+🔸 Simplex con tabla paso a paso usando Pandas.
 
-📈 Gráficos de regiones factibles con Plotly
+🖥️ Interfaz clara, educativa e intuitiva.
 
-📚 Simplex educativo paso a paso
+📱 Totalmente responsive (adaptado a móviles).
 
-💡 Compatible con móviles y navegadores modernos
+🧠 Tecnologías Utilizadas
+Flask
 
-🎓 Actividad Académica
-Tarea: Programación Lineal (Método Gráfico)
-Curso: Análisis Multivariado
-Docente: Milton Edward Humpiri Flores
-Estudiante: Rosaura Yana Pari
-Fecha de entrega: 25 de mayo – 11:59 p.m.
+NumPy, SciPy
 
-📄 Licencia
-Proyecto académico sin fines comerciales.
-Puedes usar este software con fines educativos o de aprendizaje.
+Matplotlib, Plotly
 
-📬 Contacto
-¿Tienes sugerencias o preguntas?
+Pandas
 
-📧 [rosaura.dev@example.com] (reemplázalo si tienes uno real)
-💻 GitHub: @ROSAURA12345
-```bash
+HTML5, CSS3, Bootstrap 5

@@ -1,0 +1,237 @@
+{% extends "layout.html" %}
+{% block content %}
+<style>
+    {{ super() }}
+
+    body {
+        background: linear-gradient(135deg, #667eea, #764ba2);
+        font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    }
+
+    .container {
+        max-width: 1200px;
+        margin: 30px auto;
+        background: white;
+        border-radius: 16px;
+        box-shadow: 0 20px 50px rgba(0, 0, 0, 0.1);
+        overflow: hidden;
+    }
+
+    .header {
+        background: linear-gradient(135deg, #2c3e50, #34495e);
+        color: white;
+        padding: 35px;
+        text-align: center;
+    }
+
+    .content {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 40px;
+        padding: 40px;
+    }
+
+    .form-section, .result-section {
+        background: #f8f9fa;
+        padding: 30px;
+        border-radius: 12px;
+        border: 1px solid #dee2e6;
+    }
+
+    .form-group {
+        margin-bottom: 20px;
+    }
+
+    .restriccion {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        margin-bottom: 10px;
+        flex-wrap: wrap;
+    }
+
+    .restriccion input,
+    .restriccion select {
+        width: 80px;
+    }
+
+    .restriccion span {
+        font-weight: 600;
+    }
+
+    input[type="text"],
+    input[type="number"],
+    select {
+        padding: 10px 12px;
+        font-size: 14px;
+        border: 2px solid #ced4da;
+        border-radius: 8px;
+        transition: all 0.3s ease;
+    }
+
+    input:focus, select:focus {
+        border-color: #764ba2;
+        box-shadow: 0 0 0 3px rgba(118, 75, 162, 0.2);
+        outline: none;
+    }
+
+    .btn {
+        padding: 12px 24px;
+        border: none;
+        border-radius: 8px;
+        font-size: 14px;
+        font-weight: 600;
+        cursor: pointer;
+        transition: 0.3s ease all;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+    }
+
+    .btn-primary {
+        background: linear-gradient(135deg, #667eea, #764ba2);
+        color: white;
+    }
+
+    .btn-secondary {
+        background: #6c757d;
+        color: white;
+        margin-left: 10px;
+    }
+
+    .btn-add {
+        background: #28a745;
+        color: white;
+        margin-top: 10px;
+        width: 100%;
+    }
+
+    .resultado-text {
+        background: #e8f5e8;
+        padding: 20px;
+        border-radius: 12px;
+        border-left: 5px solid #28a745;
+        font-family: 'Courier New', monospace;
+    }
+
+    .canvas-container {
+        margin-top: 30px;
+        padding: 20px;
+        background: #fff;
+        border: 1px solid #dee2e6;
+        border-radius: 10px;
+    }
+
+    canvas#grafico {
+        display: block;
+        width: 100%;
+        max-width: 100%;
+        height: 500px;
+    }
+
+    .section-title {
+        font-size: 1.4em;
+        margin-bottom: 20px;
+        color: #2c3e50;
+        border-bottom: 2px solid #667eea;
+        padding-bottom: 10px;
+    }
+
+    @media (max-width: 768px) {
+        .content {
+            grid-template-columns: 1fr;
+        }
+
+        .restriccion {
+            flex-direction: column;
+            align-items: flex-start;
+        }
+    }
+</style>
+
+<div class="container">
+    <div class="header">
+        <h1>Método Gráfico</h1>
+        <p>Optimización con programación lineal para 2 variables</p>
+    </div>
+
+    <div class="content">
+        <div class="form-section">
+            <h2 class="section-title">Configuración del Problema</h2>
+
+            <form method="post">
+                <div class="form-group">
+                    <label>Función Objetivo:</label>
+                    <input type="text" name="objetivo" placeholder="Ej: 40x1 + 60x2" required>
+                </div>
+
+                <div class="form-group">
+                    <label>Tipo de Optimización:</label>
+                    <select name="tipo">
+                        <option value="max">Maximizar</option>
+                        <option value="min">Minimizar</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label>Restricciones:</label>
+                    <div id="restricciones">
+                        <div class="restriccion">
+                            <input type="number" step="any" name="a[]" placeholder="a" required>
+                            <span>x₁ +</span>
+                            <input type="number" step="any" name="b[]" placeholder="b" required>
+                            <span>x₂</span>
+                            <select name="signo[]">
+                                <option value="<=">&le;</option>
+                                <option value=">=">&ge;</option>
+                                <option value="=">=</option>
+                            </select>
+                            <input type="number" step="any" name="rhs[]" placeholder="≤ RHS" required>
+                        </div>
+                    </div>
+                    <button type="button" class="btn btn-add" onclick="agregarRestriccion()">+ Añadir Restricción</button>
+                </div>
+
+                <input type="submit" value="Resolver" class="btn btn-primary">
+                <a href="{{ url_for('index') }}" class="btn btn-secondary">Volver al inicio</a>
+            </form>
+        </div>
+
+        <div class="result-section">
+            <h2 class="section-title">Resultado</h2>
+            {% if resultado %}
+                <div class="resultado-text">
+                    {{ resultado|safe }}
+                </div>
+                <div class="canvas-container">
+                    <canvas id="grafico"></canvas>
+                </div>
+            {% else %}
+                <p style="text-align: center; color: #6c757d;">
+                    Complete el formulario y presione <strong>Resolver</strong> para ver resultados.
+                </p>
+            {% endif %}
+        </div>
+    </div>
+</div>
+
+<script>
+function agregarRestriccion() {
+    const contenedor = document.getElementById('restricciones');
+    const div = document.createElement('div');
+    div.className = 'restriccion';
+    div.innerHTML = `
+        <input type="number" step="any" name="a[]" placeholder="a" required>
+        <span>x₁ +</span>
+        <input type="number" step="any" name="b[]" placeholder="b" required>
+        <span>x₂</span>
+        <select name="signo[]">
+            <option value="<=">&le;</option>
+            <option value=">=">&ge;</option>
+            <option value="=">=</option>
+        </select>
+        <input type="number" step="any" name="rhs[]" placeholder="≤ RHS" required>
+    `;
+    contenedor.appendChild(div);
+}
+</script>
+{% endblock %}

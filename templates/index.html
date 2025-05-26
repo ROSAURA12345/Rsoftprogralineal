@@ -1,0 +1,509 @@
+{% extends "layout.html" %}
+
+{% block title %}Inicio - Programación Lineal{% endblock %}
+
+{% block content %}
+<!-- Hero Section -->
+<div class="hero-section text-center mb-5">
+    <div class="hero-icon mb-4">
+        <i class="fas fa-rocket fa-4x text-primary"></i>
+    </div>
+    <h1 class="hero-title mb-4">
+        ¡Bienvenido al Software de Programación Lineal!
+    </h1>
+    <p class="hero-subtitle lead mb-5">
+        Resuelve problemas de optimización de manera intuitiva y visual con nuestras herramientas especializadas
+    </p>
+</div>
+
+<!-- Method Cards Section -->
+<div class="row g-4 mb-5">
+    <div class="col-lg-4 col-md-6">
+        <div class="method-card h-100">
+            <div class="method-icon">
+                <i class="fas fa-chart-area"></i>
+            </div>
+            <div class="method-content">
+                <h3 class="method-title">Método Gráfico</h3>
+                <p class="method-description">
+                    Visualiza la región factible y encuentra el punto óptimo con gráficos interactivos y dinámicos
+                </p>
+                <div class="method-features">
+                    <span class="feature-tag">
+                        <i class="fas fa-eye me-1"></i>
+                        Visual
+                    </span>
+                    <span class="feature-tag">
+                        <i class="fas fa-mouse-pointer me-1"></i>
+                        Interactivo
+                    </span>
+                </div>
+            </div>
+            <div class="method-footer">
+                <a href="/metodo_grafico" class="btn btn-method">
+                    <span>Explorar Método</span>
+                    <i class="fas fa-arrow-right ms-2"></i>
+                </a>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-lg-4 col-md-6">
+        <div class="method-card h-100">
+            <div class="method-icon simplex-direct">
+                <i class="fas fa-bolt"></i>
+            </div>
+            <div class="method-content">
+                <h3 class="method-title">Método Simplex Directo</h3>
+                <p class="method-description">
+                    Obtén resultados instantáneos usando nuestro solver optimizado para problemas complejos
+                </p>
+                <div class="method-features">
+                    <span class="feature-tag simplex-tag">
+                        <i class="fas fa-tachometer-alt me-1"></i>
+                        Rápido
+                    </span>
+                    <span class="feature-tag simplex-tag">
+                        <i class="fas fa-cogs me-1"></i>
+                        Automático
+                    </span>
+                </div>
+            </div>
+            <div class="method-footer">
+                <a href="/metodo_simplex" class="btn btn-method simplex-btn">
+                    <span>Resolver Ahora</span>
+                    <i class="fas fa-arrow-right ms-2"></i>
+                </a>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-lg-4 col-md-6">
+        <div class="method-card h-100">
+            <div class="method-icon table-method">
+                <i class="fas fa-table"></i>
+            </div>
+            <div class="method-content">
+                <h3 class="method-title">Simplex con Tabla</h3>
+                <p class="method-description">
+                    Sigue cada paso de la resolución como en clase con tablas detalladas y explicaciones
+                </p>
+                <div class="method-features">
+                    <span class="feature-tag table-tag">
+                        <i class="fas fa-graduation-cap me-1"></i>
+                        Educativo
+                    </span>
+                    <span class="feature-tag table-tag">
+                        <i class="fas fa-step-forward me-1"></i>
+                        Paso a paso
+                    </span>
+                </div>
+            </div>
+            <div class="method-footer">
+                <a href="/metodo_simplex_tabla" class="btn btn-method table-btn">
+                    <span>Aprender Método</span>
+                    <i class="fas fa-arrow-right ms-2"></i>
+                </a>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Divider -->
+<div class="section-divider">
+    <div class="divider-line"></div>
+    <div class="divider-icon">
+        <i class="fas fa-lightbulb"></i>
+    </div>
+    <div class="divider-line"></div>
+</div>
+
+<!-- Information Section -->
+<div class="info-section">
+    <div class="row align-items-center">
+        <div class="col-lg-6 mb-4 mb-lg-0">
+            <div class="info-content">
+                <h2 class="info-title">
+                    <i class="fas fa-question-circle me-3"></i>
+                    ¿Qué es la Programación Lineal?
+                </h2>
+                <p class="info-text">
+                    La programación lineal es una técnica matemática poderosa utilizada para encontrar el valor 
+                    <strong>máximo o mínimo</strong> de una función objetivo, sujeta a un conjunto de restricciones lineales.
+                </p>
+                <p class="info-text">
+                    Es ampliamente utilizada en áreas como economía, ingeniería, logística y gestión de recursos 
+                    para tomar decisiones óptimas en situaciones complejas.
+                </p>
+            </div>
+        </div>
+        <div class="col-lg-6">
+            <div class="info-visual">
+                <div class="visual-card">
+                    <div class="formula-display">
+                        <div class="formula-section">
+                            <h4 class="formula-title">Función Objetivo:</h4>
+                            <div class="formula">
+                                <strong>Maximizar:</strong> Z = c₁x₁ + c₂x₂ + ... + cₙxₙ
+                            </div>
+                        </div>
+                        <div class="formula-section">
+                            <h4 class="formula-title">Restricciones:</h4>
+                            <div class="formula">
+                                a₁₁x₁ + a₁₂x₂ + ... + a₁ₙxₙ ≤ b₁<br>
+                                a₂₁x₁ + a₂₂x₂ + ... + a₂ₙxₙ ≤ b₂<br>
+                                ⋮<br>
+                                x₁, x₂, ..., xₙ ≥ 0
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Features Section -->
+<div class="features-section mt-5">
+    <h2 class="section-title text-center mb-5">
+        <i class="fas fa-star me-3"></i>
+        Características del Sistema
+    </h2>
+    <div class="row g-4">
+        <div class="col-md-6 col-lg-3">
+            <div class="feature-item">
+                <div class="feature-icon-small">
+                    <i class="fas fa-user-friendly"></i>
+                </div>
+                <h4>Interfaz Intuitiva</h4>
+                <p>Diseño claro y fácil de usar para todos los niveles</p>
+            </div>
+        </div>
+        <div class="col-md-6 col-lg-3">
+            <div class="feature-item">
+                <div class="feature-icon-small">
+                    <i class="fas fa-chart-line"></i>
+                </div>
+                <h4>Resultados Visuales</h4>
+                <p>Gráficos interactivos y representaciones claras</p>
+            </div>
+        </div>
+        <div class="col-md-6 col-lg-3">
+            <div class="feature-item">
+                <div class="feature-icon-small">
+                    <i class="fas fa-clock"></i>
+                </div>
+                <h4>Resultados Rápidos</h4>
+                <p>Soluciones instantáneas para problemas complejos</p>
+            </div>
+        </div>
+        <div class="col-md-6 col-lg-3">
+            <div class="feature-item">
+                <div class="feature-icon-small">
+                    <i class="fas fa-graduation-cap"></i>
+                </div>
+                <h4>Valor Educativo</h4>
+                <p>Perfecto para aprender y enseñar el método</p>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+/* Hero Section Styles */
+.hero-icon {
+    animation: bounce 2s infinite;
+}
+
+@keyframes bounce {
+    0%, 20%, 50%, 80%, 100% {
+        transform: translateY(0);
+    }
+    40% {
+        transform: translateY(-10px);
+    }
+    60% {
+        transform: translateY(-5px);
+    }
+}
+
+.hero-title {
+    font-size: 2.5rem;
+    font-weight: 700;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+}
+
+.hero-subtitle {
+    font-size: 1.1rem;
+    color: #4a5568;
+    max-width: 600px;
+    margin: 0 auto;
+}
+
+/* Method Cards */
+.method-card {
+    background: white;
+    border-radius: 20px;
+    padding: 2rem;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+    transition: all 0.3s ease;
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    display: flex;
+    flex-direction: column;
+}
+
+.method-card:hover {
+    transform: translateY(-10px);
+    box-shadow: 0 20px 50px rgba(0, 0, 0, 0.15);
+}
+
+.method-icon {
+    width: 80px;
+    height: 80px;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 2rem;
+    color: white;
+    margin: 0 auto 1.5rem;
+    transition: all 0.3s ease;
+}
+
+.method-icon.simplex-direct {
+    background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+}
+
+.method-icon.table-method {
+    background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
+}
+
+.method-card:hover .method-icon {
+    transform: scale(1.1) rotate(10deg);
+}
+
+.method-content {
+    flex-grow: 1;
+    text-align: center;
+}
+
+.method-title {
+    font-size: 1.4rem;
+    font-weight: 600;
+    color: #2d3748;
+    margin-bottom: 1rem;
+}
+
+.method-description {
+    color: #4a5568;
+    margin-bottom: 1.5rem;
+    line-height: 1.6;
+}
+
+.method-features {
+    display: flex;
+    justify-content: center;
+    gap: 0.5rem;
+    margin-bottom: 1.5rem;
+    flex-wrap: wrap;
+}
+
+.feature-tag {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    color: white;
+    padding: 0.3rem 0.8rem;
+    border-radius: 20px;
+    font-size: 0.8rem;
+    font-weight: 500;
+}
+
+.feature-tag.simplex-tag {
+    background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+}
+
+.feature-tag.table-tag {
+    background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
+}
+
+.method-footer {
+    margin-top: auto;
+}
+
+.btn-method {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    border: none;
+    color: white;
+    padding: 0.8rem 2rem;
+    border-radius: 50px;
+    font-weight: 600;
+    text-decoration: none;
+    display: inline-flex;
+    align-items: center;
+    transition: all 0.3s ease;
+    width: 100%;
+    justify-content: center;
+}
+
+.btn-method.simplex-btn {
+    background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+}
+
+.btn-method.table-btn {
+    background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
+}
+
+.btn-method:hover {
+    color: white;
+    transform: translateY(-2px);
+    box-shadow: 0 10px 25px rgba(102, 126, 234, 0.4);
+    text-decoration: none;
+}
+
+/* Section Divider */
+.section-divider {
+    display: flex;
+    align-items: center;
+    margin: 4rem 0;
+}
+
+.divider-line {
+    flex: 1;
+    height: 2px;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    opacity: 0.3;
+}
+
+.divider-icon {
+    margin: 0 2rem;
+    font-size: 2rem;
+    color: #667eea;
+}
+
+/* Info Section */
+.info-section {
+    padding: 2rem 0;
+}
+
+.info-title {
+    font-size: 2rem;
+    font-weight: 700;
+    color: #2d3748;
+    margin-bottom: 1.5rem;
+}
+
+.info-text {
+    font-size: 1.1rem;
+    color: #4a5568;
+    line-height: 1.8;
+    margin-bottom: 1rem;
+}
+
+.visual-card {
+    background: white;
+    border-radius: 15px;
+    padding: 2rem;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+    border: 1px solid rgba(102, 126, 234, 0.2);
+}
+
+.formula-display {
+    text-align: center;
+}
+
+.formula-section {
+    margin-bottom: 1.5rem;
+}
+
+.formula-title {
+    color: #667eea;
+    font-weight: 600;
+    margin-bottom: 0.5rem;
+}
+
+.formula {
+    background: #f7fafc;
+    padding: 1rem;
+    border-radius: 10px;
+    font-family: 'Courier New', monospace;
+    color: #2d3748;
+    line-height: 1.6;
+}
+
+/* Features Section */
+.features-section {
+    padding: 3rem 0;
+}
+
+.section-title {
+    font-size: 2rem;
+    font-weight: 700;
+    color: #2d3748;
+}
+
+.feature-item {
+    text-align: center;
+    padding: 1.5rem;
+}
+
+.feature-icon-small {
+    width: 60px;
+    height: 60px;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.5rem;
+    color: white;
+    margin: 0 auto 1rem;
+    transition: all 0.3s ease;
+}
+
+.feature-item:hover .feature-icon-small {
+    transform: scale(1.1);
+}
+
+.feature-item h4 {
+    color: #2d3748;
+    font-weight: 600;
+    margin-bottom: 0.5rem;
+}
+
+.feature-item p {
+    color: #4a5568;
+    font-size: 0.9rem;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+    .hero-title {
+        font-size: 2rem;
+    }
+    
+    .hero-subtitle {
+        font-size: 1rem;
+    }
+    
+    .method-card {
+        padding: 1.5rem;
+    }
+    
+    .info-title {
+        font-size: 1.5rem;
+    }
+    
+    .section-title {
+        font-size: 1.5rem;
+    }
+    
+    .divider-icon {
+        margin: 0 1rem;
+        font-size: 1.5rem;
+    }
+}
+</style>
+{% endblock %}
